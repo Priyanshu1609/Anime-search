@@ -4,6 +4,12 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {},
+    fontFamily: {
+      sans: ["ui-sans-serif", "system-ui"],
+      Kaushan: ["Kaushan Script"],
+      Raleway: ['Raleway'],
+      Roboto: ['Roboto']
+    },
   },
   variants: {
     extend: {},

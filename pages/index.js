@@ -1,82 +1,71 @@
+import { MicrophoneIcon, SearchIcon } from '@heroicons/react/solid'
 import Head from 'next/head'
+import { useEffect, useRef, useState } from 'react'
+import { FilmIcon, UserCircleIcon } from '@heroicons/react/solid'
+import Content from '../components/Content'
+import { useRouter } from 'next/router'
 
-export default function Home() {
+export default function Home({ topAnime }) {
+
+
+  const searchInputRef = useRef('');
+  const router = useRouter();
+
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const term = searchInputRef.current.value;
+    if (!term) return;
+    router.push(`/page?term=${term}`)
+
+
+  }
+
+
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2">
+    <div className="">
       <Head>
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <main>
+        <div className="bg-yellow-300 sticky top-0 h-28  py-2 px-2 lg:h-56">
+          <div className="flex items-center justify-between">
+            <FilmIcon className="h-8 w-8" 
+            />
+            <UserCircleIcon className="h-8 w-8" />
+          </div>
+          <h1 className=" text-lg lg:text-3xl lg:mt-10 flex justify-center -mt-7">Find Movies, TV shows and more</h1>
 
-      <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
-        <h1 className="text-6xl font-bold">
-          Welcome to{' '}
-          <a className="text-blue-600" href="https://nextjs.org">
-            Next.js!
-          </a>
-        </h1>
-
-        <p className="mt-3 text-2xl">
-          Get started by editing{' '}
-          <code className="p-3 font-mono text-lg bg-gray-100 rounded-md">
-            pages/index.js
-          </code>
-        </p>
-
-        <div className="flex flex-wrap items-center justify-around max-w-4xl mt-6 sm:w-full">
-          <a
-            href="https://nextjs.org/docs"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Documentation &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Find in-depth information about Next.js features and API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Learn &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Learn about Next.js in an interactive course with quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Examples &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Discover and deploy boilerplate example Next.js projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Deploy &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+          <form className="flex flex-col items-center w-full mx-auto flex-grow  z-10 mt-5 lg:mt-20" onSubmit={handleSearch}>
+            <div className="flex w-full  hover:shadow-lg bg-white focus-within:shadow-lg max-w-md rounded-lg lg:rounded-full border border-gray-200 lg:px-5 lg:py-3 items-center sm:max-w-xl lg:max-w-2xl">
+              <SearchIcon className="h-5 mr-3 " />
+              <input type="text" className="flex-grow focus:outline-none  p-2" placeholder="Enter to search"
+                ref={searchInputRef}
+              />
+              <MicrophoneIcon className="h-5  text-gray-500" />
+              <button type="submit" className="hidden"> </button>
+            </div>
+          </form>
         </div>
-      </main>
 
-      <footer className="flex items-center justify-center w-full h-24 border-t">
-        <a
-          className="flex items-center justify-center"
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className="h-4 ml-2" />
-        </a>
-      </footer>
+      </main>
+      <Content topAnime={topAnime.top} />
+
+
+
     </div>
   )
+}
+
+export async function getStaticProps() {
+  const url = 'https://api.jikan.moe/v3/top/anime/1/bypopularity';
+  const anime = await fetch(url).then(res => res.json())
+
+  return {
+    props: {
+      topAnime: anime
+    }
+  }
 }
